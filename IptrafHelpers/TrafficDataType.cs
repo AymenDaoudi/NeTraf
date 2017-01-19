@@ -1,6 +1,6 @@
 namespace ConsoleApplication
 {
-    public enum CollectedDataType
+    public enum TrafficDataType
     {
         TotalData,
         IncomingData,

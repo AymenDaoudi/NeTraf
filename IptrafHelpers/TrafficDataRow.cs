@@ -2,26 +2,29 @@ using System.Text.RegularExpressions;
 
 namespace ConsoleApplication
 {
-    public class LoggedData
+    public class TrafficDataRow
     {
+        #region Fields
+            const string unsignedIntegerPattern = @"\d+";
+        #endregion
         #region Properties
             public PortType PortType { get; set; }
             public uint PortNumber { get; set; }
-            public CollectedData TotalCollectedData { get; set; }
-            public CollectedData IncomingCollectedData { get; set; }
-            public CollectedData OutgoingCollectedData { get; set; }
+            public TrafficData TotalTrafficData { get; set; }
+            public TrafficData IncomingTrafficData { get; set; }
+            public TrafficData OutgoingTrafficData { get; set; }
         #endregion
 
-        public LoggedData(string loggedData)
+        public TrafficDataRow(string loggedRow)
         {
-            var splittedData = loggedData.Split(':',';');
-            SetPort(splittedData);   
-            SetCollectedData(splittedData);
+            var splittedRow = loggedRow.Split(':',';');
+            SetPort(splittedRow);   
+            SetTrafficData(splittedRow);
         }
 
-        private void SetPort(string[] splittedData)
+        private void SetPort(string[] splittedRow)
         {
-            var portInfo = splittedData[0].Split('/');
+            var portInfo = splittedRow[0].Split('/');
             switch (portInfo[0])
             {
                 case "TCP": PortType = PortType.TCP;
@@ -36,18 +39,18 @@ namespace ConsoleApplication
             PortNumber = portNumber;
         }
 
-        public void SetCollectedData(string[] splittedData)
+        public void SetTrafficData(string[] splittedRow)
         {
-            TotalCollectedData = ParseTrafficData(splittedData,CollectedDataType.TotalData);
-            IncomingCollectedData = ParseTrafficData(splittedData,CollectedDataType.IncomingData);
-            OutgoingCollectedData = ParseTrafficData(splittedData,CollectedDataType.OutgoingData);
+            TotalTrafficData = ParseTrafficData(splittedRow,TrafficDataType.TotalData);
+            IncomingTrafficData = ParseTrafficData(splittedRow,TrafficDataType.IncomingData);
+            OutgoingTrafficData = ParseTrafficData(splittedRow,TrafficDataType.OutgoingData);
         }
 
-        public CollectedData ParseTrafficData(string[] splittedData,CollectedDataType collectedDataType)
+        public TrafficData ParseTrafficData(string[] splittedRow,TrafficDataType TrafficDataType)
         {
             var integerRegex = new Regex(@"\d+");
 
-            var data = splittedData[(int)collectedDataType + 1].Split(',');
+            var data = splittedRow[(int)TrafficDataType + 1].Split(',');
             double packets;
             try
             {
@@ -68,7 +71,7 @@ namespace ConsoleApplication
                 bytes = 0;
             }
             
-            return new CollectedData(){Packets = packets, Bytes = bytes};
+            return new TrafficData(){Packets = packets, Bytes = bytes};
         }
     }
 }
