@@ -2,14 +2,14 @@ using System.Diagnostics;
 
 namespace ConsoleApplication
 {
-    public class ShellCommandExecuter
+    public class ShellCommand
     {
         #region Properties
             public string Command { get; }
-            public Process correspondingProcess { get; private set;}
+            public Process CorrespondingProcess { get; private set;}
         #endregion
 
-        public ShellCommandExecuter(string command)
+        public ShellCommand(string command)
         {
             Command = command;
         }
@@ -17,27 +17,27 @@ namespace ConsoleApplication
         #region Methods
             public void Execute()
             {
-                correspondingProcess = new Process();
-                correspondingProcess.StartInfo.FileName = "/bin/bash";
-                correspondingProcess.StartInfo.Arguments = "-c \" " + Command + " \"";
-                correspondingProcess.StartInfo.UseShellExecute = false; 
-                correspondingProcess.StartInfo.RedirectStandardOutput = true;
-                correspondingProcess.Start ();
+                CorrespondingProcess = new Process();
+                CorrespondingProcess.StartInfo.FileName = "/bin/bash";
+                CorrespondingProcess.StartInfo.Arguments = "-c \" " + Command + " \"";
+                CorrespondingProcess.StartInfo.UseShellExecute = false; 
+                CorrespondingProcess.StartInfo.RedirectStandardOutput = true;
+                CorrespondingProcess.Start ();
             }
 
             private void Execute(string command)
             {
-                correspondingProcess = new Process();
-                correspondingProcess.StartInfo.FileName = "/bin/bash";
-                correspondingProcess.StartInfo.Arguments = "-c \" " + command + " \"";
-                correspondingProcess.StartInfo.UseShellExecute = false; 
-                correspondingProcess.StartInfo.RedirectStandardOutput = true;
-                correspondingProcess.Start ();
+                CorrespondingProcess = new Process();
+                CorrespondingProcess.StartInfo.FileName = "/bin/bash";
+                CorrespondingProcess.StartInfo.Arguments = "-c \" " + command + " \"";
+                CorrespondingProcess.StartInfo.UseShellExecute = false; 
+                CorrespondingProcess.StartInfo.RedirectStandardOutput = true;
+                CorrespondingProcess.Start ();
             }
 
             public void Stop()
             {
-                Execute($"killall {correspondingProcess.ProcessName}");
+                Execute($"killall {CorrespondingProcess.ProcessName}");
             }
         #endregion
     }  
