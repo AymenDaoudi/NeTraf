@@ -44,7 +44,7 @@ namespace ConsoleApplication
                 case TrafficDataType.OutgoingData : ForegroundColor = ConsoleColor.Red; break;
                 default: ForegroundColor = ConsoleColor.White; break;
             }
-            WriteLine($"{trafficDataType} : " + trafficData.Print());
+            WriteLine($"{trafficDataType} : " + trafficData.Print(false));
             ForegroundColor = ConsoleColor.White; 
         }
     }

@@ -11,37 +11,6 @@ namespace ConsoleApplication
 {
     public class Program
     {
-        // public static void ExecuteCommand(string command)
-        // {
-        //     Process proc = new System.Diagnostics.Process ();
-        //     proc.StartInfo.FileName = "/bin/bash";
-        //     proc.StartInfo.Arguments = "-c \" " + command + " \"";
-        //     proc.StartInfo.UseShellExecute = false; 
-        //     proc.StartInfo.RedirectStandardOutput = true;
-        //     proc.Start ();
-            
-        //     while (true) 
-        //     {
-        //         var enteredCommand = Console.ReadLine();
-        //         if (enteredCommand.ToLower() == "stop")
-        //         {
-        //             proc.Kill();
-        //             //ExecuteCommand("killall iptraf");
-        //             Environment.Exit(0);
-        //         }
-        //     }
-
-        //     // while (!proc.StandardOutput.EndOfStream) 
-        //     // {
-        //     //     Console.WriteLine (proc.StandardOutput.ReadLine ());
-        //     //     var enteredCommand = Console.ReadLine();
-        //     //     if (enteredCommand.ToLower() == "stop")
-        //     //     {
-        //     //         proc.Kill();
-        //     //         Environment.Exit(0);
-        //     //     }
-        //     // }
-        // }
         public static void Main(string[] args)
         {    
             //ExecuteCommand("netstat -c --all --tcp --udp --program | grep dring > /home/aymendaoudi/Desktop/Test");
@@ -62,6 +31,16 @@ namespace ConsoleApplication
                 WriteLine();
                 WriteLine("__________________________________________________________________________");
             });
+            var stream = File.OpenWrite("/home/aymendaoudi/Desktop/Output/Ring/VideoCall/NetTrafOutput.txt");
+            using (System.IO.StreamWriter file =  new System.IO.StreamWriter(stream))
+            {
+                trafficDataRowSets.ForEach(trafficDataRowSet => 
+                {
+                    file.WriteLine(trafficDataRowSet.TotalTotalTrafficData.Print(true));
+                    // file.WriteLine(trafficDataRowSet.TotalIncomingTrafficData.Print(true));
+                    // file.WriteLine(trafficDataRowSet.TotalOutgoingTrafficData.Print(true));
+                });
+            }
         }
     }
 }
