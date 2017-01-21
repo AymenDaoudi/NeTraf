@@ -8,31 +8,33 @@ namespace ConsoleApplication
     public class TrafficDataRowSet
     {
         #region Properties
-        public List<TrafficDataRow> TrafficDataRows { get; set; }
-        public Tuple<double,double> AccumulatedTotalTotalTrafficData { get; set; }
-        public Tuple<double,double> AccumulatedTotalIncomingTrafficData { get; set; }
-        public Tuple<double,double> AccumulatedTotalOutgoingTrafficData { get; set; }
-        public Tuple<double,double,double> TotalTotalTrafficData { get; set; }
-        public Tuple<double,double,double> TotalIncomingTrafficData { get; set; }
-        public Tuple<double,double,double> TotalOutgoingTrafficData { get; set; }
+            public double RunningTime { get;}
+            public List<TrafficDataRow> TrafficDataRows { get; set; }
+            public Tuple<double,double> AccumulatedTotalTotalTrafficData { get; set; }
+            public Tuple<double,double> AccumulatedTotalIncomingTrafficData { get; set; }
+            public Tuple<double,double> AccumulatedTotalOutgoingTrafficData { get; set; }
+            public Tuple<double,double,double> TotalTotalTrafficData { get; set; }
+            public Tuple<double,double,double> TotalIncomingTrafficData { get; set; }
+            public Tuple<double,double,double> TotalOutgoingTrafficData { get; set; }
         
         #endregion
 
-        public TrafficDataRowSet(List<string> loggedRows)
+        public TrafficDataRowSet(double runningTime,List<string> loggedRows)
         {
-            TrafficDataRows = loggedRows.Select(trafficDataRow => new TrafficDataRow(trafficDataRow)).ToList();                                                       
+            TrafficDataRows = loggedRows.Select(trafficDataRow => new TrafficDataRow(trafficDataRow)).ToList();  
+            RunningTime = runningTime;
         }
 
         public void CalculateTotals ()
         {
-            AccumulatedTotalTotalTrafficData =  new Tuple<double,double>(TrafficDataRows.Select( data => data.TotalTrafficData.Packets).Sum(),
-                                                                       TrafficDataRows.Select( data => data.TotalTrafficData.Bytes).Sum());
+            AccumulatedTotalTotalTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.TotalTrafficData.Packets).Sum(),
+                                                                         TrafficDataRows.Select(data => data.TotalTrafficData.Bytes).Sum());
 
-            AccumulatedTotalIncomingTrafficData =  new Tuple<double,double>(TrafficDataRows.Select( data => data.IncomingTrafficData.Packets).Sum(),
-                                                                          TrafficDataRows.Select( data => data.IncomingTrafficData.Bytes).Sum());
+            AccumulatedTotalIncomingTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.IncomingTrafficData.Packets).Sum(),
+                                                                            TrafficDataRows.Select(data => data.IncomingTrafficData.Bytes).Sum());
                                                                           
-            AccumulatedTotalOutgoingTrafficData =  new Tuple<double,double>(TrafficDataRows.Select( data => data.OutgoingTrafficData.Packets).Sum(),
-                                                                          TrafficDataRows.Select( data => data.OutgoingTrafficData.Bytes).Sum()); 
+            AccumulatedTotalOutgoingTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.OutgoingTrafficData.Packets).Sum(),
+                                                                            TrafficDataRows.Select(data => data.OutgoingTrafficData.Bytes).Sum()); 
         }
 
         public static void PrintTrafficData(Tuple<double,double,double> trafficData, TrafficDataType trafficDataType)
@@ -47,5 +49,7 @@ namespace ConsoleApplication
             WriteLine($"{trafficDataType} : " + trafficData.Print(false));
             ForegroundColor = ConsoleColor.White; 
         }
+
+        
     }
 }

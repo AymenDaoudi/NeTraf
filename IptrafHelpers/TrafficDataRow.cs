@@ -5,7 +5,7 @@ namespace ConsoleApplication
     public class TrafficDataRow
     {
         #region Fields
-            const string unsignedIntegerPattern = @"\d+";
+            const string _unsignedIntegerPattern = @"\d+";
         #endregion
         #region Properties
             public PortType PortType { get; set; }
@@ -48,7 +48,7 @@ namespace ConsoleApplication
 
         public TrafficData ParseTrafficData(string[] splittedRow,TrafficDataType TrafficDataType)
         {
-            var integerRegex = new Regex(@"\d+");
+            var integerRegex = new Regex(_unsignedIntegerPattern);
 
             var data = splittedRow[(int)TrafficDataType + 1].Split(',');
             double packets;

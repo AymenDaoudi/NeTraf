@@ -22,9 +22,12 @@ namespace ConsoleApplication
                 TrafficDataRowSet.PrintTrafficData(trafficDataRowSet.TotalTotalTrafficData, TrafficDataType.TotalData);
                 TrafficDataRowSet.PrintTrafficData(trafficDataRowSet.TotalIncomingTrafficData, TrafficDataType.IncomingData);
                 TrafficDataRowSet.PrintTrafficData(trafficDataRowSet.TotalOutgoingTrafficData, TrafficDataType.OutgoingData);
+                
                 WriteLine();
+                WriteLine(trafficDataRowSet.RunningTime);
                 WriteLine("__________________________________________________________________________");
             });
+            
             var stream = File.OpenWrite("/home/aymendaoudi/Desktop/Output/Ring/VideoCall/NetTrafOutput.txt");
             using (System.IO.StreamWriter file =  new System.IO.StreamWriter(stream))
             {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using static System.Console;
 
 namespace ConsoleApplication
@@ -9,8 +10,8 @@ namespace ConsoleApplication
     public class IptrafParser
     {
         #region Fields
-            private const int timeLapse = 120;
             private List<string> _loggedRows;
+            private const string _unsignedIntegerPattern = @"\d+";
         #endregion
 
         #region Properties
@@ -26,29 +27,30 @@ namespace ConsoleApplication
         #region Methods
             public List<TrafficDataRowSet> GetIptrafTrafficDataSets(List<uint> netstatPorts)
             {
-                var trafficDataSets = new List<TrafficDataRowSet>();
+                var trafficDataRowSets = new List<TrafficDataRowSet>();
                 try
                 {
                     _loggedRows = File.ReadAllLines(FilePath).ToList();
                     DeleteEmptyRows(ref _loggedRows);
 
                     var trafficDataGroups = ToTrafficDataGroups(_loggedRows);                    
-                    trafficDataGroups.ForEach(_ => trafficDataSets.Add(new TrafficDataRowSet(_))); 
                     
-                    FilterConcernedTrafficData(ref trafficDataSets,netstatPorts);
+                    trafficDataGroups.ForEach(_ => trafficDataRowSets.Add(new TrafficDataRowSet(_.Item1,_.Item2))); 
+                    
+                    FilterConcernedTrafficData(ref trafficDataRowSets,netstatPorts);
 
-                    CalculateTrafficDataSetsTotals(ref trafficDataSets);
+                    CalculateTrafficDataSetsTotals(ref trafficDataRowSets);
 
-                    GetRealTrafficData(ref trafficDataSets);
+                    GetRealTrafficData(ref trafficDataRowSets);
                     
                 }
                 catch (FileNotFoundException exception)
                 {
-                    trafficDataSets = null;
+                    trafficDataRowSets = null;
                     WriteLine($"The Iptraf ouput file : {exception.FileName} was not found !");
                 }
                 
-                return trafficDataSets;
+                return trafficDataRowSets;
             }
 
             public static void DeleteEmptyRows(ref List<string> loggedRows)
@@ -56,30 +58,37 @@ namespace ConsoleApplication
                 loggedRows.RemoveAll(row => row == string.Empty);
             }
 
-            public List<List<string>> ToTrafficDataGroups(List<string> loggedLines)
+            public List<Tuple<double,List<string>>> ToTrafficDataGroups(List<string> loggedLines)
             {
-                var loggedRowGroups = new List<List<string>>();
-                var loggedRowGroup = new List<string>();
-                loggedRowGroups.Add(loggedRowGroup);
+                var loggedRowGroups = new List<Tuple<double,List<string>>>();
+                var integerRegex = new Regex(_unsignedIntegerPattern);
 
+                var loggedRowGroup = new List<string>();
+                
+                var previousRunningTime = 0d;
+                var runningTime = 0d;
+                
                 for (int i = 0; i < loggedLines.Count; i++)
                 {
                     if (loggedLines[i].Contains("Running time"))
                     {
+                        previousRunningTime = runningTime;
+                        double.TryParse(integerRegex.Match(loggedLines[i]).Groups[0].Value, out runningTime);
+                        loggedRowGroups.Add(new Tuple<double,List<string>>(runningTime - previousRunningTime,loggedRowGroup));
                         loggedRowGroup = new List<string>();
-                        loggedRowGroups.Add(loggedRowGroup);
                         continue;
                     }            
                     if (loggedLines[i].Contains("***")) continue;                  
                     loggedRowGroup.Add(loggedLines[i]);
                 }
 
-                loggedRowGroups.Remove(loggedRowGroups.First(_ => _.Count()==0));
                 return loggedRowGroups;
             }
 
 
-            private void FilterConcernedTrafficData(ref List<TrafficDataRowSet> trafficDataRowSets, List<uint> netstatPorts) => trafficDataRowSets.ForEach(trafficDataRowSet => trafficDataRowSet.TrafficDataRows.RemoveAll(loggedData => !netstatPorts.Contains(loggedData.PortNumber)));        
+            private void FilterConcernedTrafficData(ref List<TrafficDataRowSet> trafficDataRowSets, List<uint> netstatPorts) => trafficDataRowSets.ForEach(trafficDataRowSet
+                                                                                                                             => trafficDataRowSet.TrafficDataRows.RemoveAll(loggedData 
+                                                                                                                             => !netstatPorts.Contains(loggedData.PortNumber)));        
             
 
             private void CalculateTrafficDataSetsTotals(ref List<TrafficDataRowSet> trafficDataSets) 
@@ -87,9 +96,10 @@ namespace ConsoleApplication
                 trafficDataSets.ForEach(trafficDataSet => trafficDataSet.CalculateTotals());
             } 
 
+            //Tight coupled with TrafficDataRowSet class !!
             public Tuple<double,double,double> UnaccumulateTrafficData(Tuple<double,double> AccumulatedColledData, 
-                                                                    Tuple<double,double> NextAccumulatedColledData,
-                                                                    int timeLapse)
+                                                                       Tuple<double,double> NextAccumulatedColledData,
+                                                                       double timeLapse)
             {
                 var addedPackets = NextAccumulatedColledData.Item1 - AccumulatedColledData.Item1;
 
@@ -100,6 +110,7 @@ namespace ConsoleApplication
                 return new Tuple<double,double,double>(addedPackets,addedBytes,rate);
             }
 
+            //Tight coupled with TrafficDataRowSet class !!
             private void GetRealTrafficData(ref List<TrafficDataRowSet> trafficDataRowSets)
             {
                 foreach (var trafficDataRowSet in trafficDataRowSets)
@@ -108,27 +119,27 @@ namespace ConsoleApplication
                         {
                             trafficDataRowSet.TotalTotalTrafficData = UnaccumulateTrafficData(new Tuple<double, double>(0,0),
                                                                                     trafficDataRowSet.AccumulatedTotalTotalTrafficData,
-                                                                                    timeLapse);
+                                                                                    trafficDataRowSet.RunningTime);
                             trafficDataRowSet.TotalIncomingTrafficData = UnaccumulateTrafficData(new Tuple<double, double>(0,0),
                                                                                     trafficDataRowSet.AccumulatedTotalIncomingTrafficData,
-                                                                                    timeLapse);
+                                                                                    trafficDataRowSet.RunningTime);
                             trafficDataRowSet.TotalOutgoingTrafficData = UnaccumulateTrafficData(new Tuple<double, double>(0,0),
                                                                                     trafficDataRowSet.AccumulatedTotalOutgoingTrafficData,
-                                                                                    timeLapse);
+                                                                                    trafficDataRowSet.RunningTime);
                             continue;
                         }
 
                         trafficDataRowSet.TotalTotalTrafficData = UnaccumulateTrafficData(trafficDataRowSets[trafficDataRowSets.IndexOf(trafficDataRowSet)-1].AccumulatedTotalTotalTrafficData,
-                                                                                    trafficDataRowSet.AccumulatedTotalTotalTrafficData,
-                                                                                    timeLapse);
+                                                                                          trafficDataRowSet.AccumulatedTotalTotalTrafficData,
+                                                                                          trafficDataRowSet.RunningTime);
                                                                                  
                         trafficDataRowSet.TotalIncomingTrafficData = UnaccumulateTrafficData(trafficDataRowSets[trafficDataRowSets.IndexOf(trafficDataRowSet)-1].AccumulatedTotalIncomingTrafficData,
-                                                                                       trafficDataRowSet.AccumulatedTotalIncomingTrafficData,
-                                                                                       timeLapse);
+                                                                                             trafficDataRowSet.AccumulatedTotalIncomingTrafficData,
+                                                                                             trafficDataRowSet.RunningTime);
                                                                                     
                         trafficDataRowSet.TotalOutgoingTrafficData = UnaccumulateTrafficData(trafficDataRowSets[trafficDataRowSets.IndexOf(trafficDataRowSet)-1].AccumulatedTotalOutgoingTrafficData,
-                                                                                       trafficDataRowSet.AccumulatedTotalOutgoingTrafficData,
-                                                                                       timeLapse);                                                                                                                
+                                                                                             trafficDataRowSet.AccumulatedTotalOutgoingTrafficData,
+                                                                                             trafficDataRowSet.RunningTime);                                                                                                                
                     }
             }
 
