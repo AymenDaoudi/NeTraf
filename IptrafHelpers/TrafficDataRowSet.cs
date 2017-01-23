@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Console;
+using static ConsoleApplication.HelperMethods;
 
 namespace ConsoleApplication
 {
@@ -9,6 +10,7 @@ namespace ConsoleApplication
     {
         #region Properties
             public double RunningTime { get;}
+            public double CumulatedRunningTime { get;}
             public List<TrafficDataRow> TrafficDataRows { get; set; }
             public Tuple<double,double> AccumulatedTotalTotalTrafficData { get; set; }
             public Tuple<double,double> AccumulatedTotalIncomingTrafficData { get; set; }
@@ -19,10 +21,11 @@ namespace ConsoleApplication
         
         #endregion
 
-        public TrafficDataRowSet(double runningTime,List<string> loggedRows)
+        public TrafficDataRowSet(double runningTime,double cumulatedRunningTime,List<string> loggedRows)
         {
             TrafficDataRows = loggedRows.Select(trafficDataRow => new TrafficDataRow(trafficDataRow)).ToList();  
             RunningTime = runningTime;
+            CumulatedRunningTime = cumulatedRunningTime;
         }
 
         public void CalculateTotals ()
@@ -35,21 +38,6 @@ namespace ConsoleApplication
                                                                           
             AccumulatedTotalOutgoingTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.OutgoingTrafficData.Packets).Sum(),
                                                                             TrafficDataRows.Select(data => data.OutgoingTrafficData.Bytes).Sum()); 
-        }
-
-        public static void PrintTrafficData(Tuple<double,double,double> trafficData, TrafficDataType trafficDataType)
-        {
-            switch (trafficDataType)
-            {
-                case TrafficDataType.TotalData : ForegroundColor = ConsoleColor.White; break;
-                case TrafficDataType.IncomingData : ForegroundColor = ConsoleColor.Green; break;
-                case TrafficDataType.OutgoingData : ForegroundColor = ConsoleColor.Red; break;
-                default: ForegroundColor = ConsoleColor.White; break;
-            }
-            WriteLine($"{trafficDataType} : " + trafficData.Print(false));
-            ForegroundColor = ConsoleColor.White; 
-        }
-
-        
+        }        
     }
 }

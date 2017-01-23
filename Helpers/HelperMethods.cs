@@ -21,5 +21,13 @@ namespace ConsoleApplication
 
             return new Tuple<double,string>(convertedBytes,unit);
         }
+
+
+        public static string ConvertTime(double seconds)
+        {
+            TimeSpan time = TimeSpan.FromSeconds(seconds);
+            return time .ToString(@"hh\:mm\:ss");
+        }
+
     }
 }

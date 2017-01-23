@@ -35,7 +35,7 @@ namespace ConsoleApplication
 
                     var trafficDataGroups = ToTrafficDataGroups(_loggedRows);                    
                     
-                    trafficDataGroups.ForEach(_ => trafficDataRowSets.Add(new TrafficDataRowSet(_.Item1,_.Item2))); 
+                    trafficDataGroups.ForEach(_ => trafficDataRowSets.Add(new TrafficDataRowSet(_.Item1,_.Item2,_.Item3))); 
                     
                     FilterConcernedTrafficData(ref trafficDataRowSets,netstatPorts);
 
@@ -58,43 +58,36 @@ namespace ConsoleApplication
                 loggedRows.RemoveAll(row => row == string.Empty);
             }
 
-            public List<Tuple<double,List<string>>> ToTrafficDataGroups(List<string> loggedLines)
+            public List<Tuple<double,double,List<string>>> ToTrafficDataGroups(List<string> loggedLines)
             {
-                var loggedRowGroups = new List<Tuple<double,List<string>>>();
                 var integerRegex = new Regex(_unsignedIntegerPattern);
 
-                var loggedRowGroup = new List<string>();
-                
-                var previousRunningTime = 0d;
+                var loggedRowGroups = new List<Tuple<double,double,List<string>>>();
+                var loggedDataTrafficGroup = new List<string>();
                 var runningTime = 0d;
-                
+                var previousRunningTime = 0d;
                 for (int i = 0; i < loggedLines.Count; i++)
                 {
                     if (loggedLines[i].Contains("Running time"))
                     {
                         previousRunningTime = runningTime;
                         double.TryParse(integerRegex.Match(loggedLines[i]).Groups[0].Value, out runningTime);
-                        loggedRowGroups.Add(new Tuple<double,List<string>>(runningTime - previousRunningTime,loggedRowGroup));
-                        loggedRowGroup = new List<string>();
+                        loggedRowGroups.Add(new Tuple<double, double, List<string>>(runningTime - previousRunningTime,runningTime,loggedDataTrafficGroup));
+                        loggedDataTrafficGroup = new List<string>();
                         continue;
                     }            
                     if (loggedLines[i].Contains("***")) continue;                  
-                    loggedRowGroup.Add(loggedLines[i]);
+                    loggedDataTrafficGroup.Add(loggedLines[i]);
                 }
 
                 return loggedRowGroups;
             }
 
-
             private void FilterConcernedTrafficData(ref List<TrafficDataRowSet> trafficDataRowSets, List<uint> netstatPorts) => trafficDataRowSets.ForEach(trafficDataRowSet
                                                                                                                              => trafficDataRowSet.TrafficDataRows.RemoveAll(loggedData 
                                                                                                                              => !netstatPorts.Contains(loggedData.PortNumber)));        
-            
-
-            private void CalculateTrafficDataSetsTotals(ref List<TrafficDataRowSet> trafficDataSets) 
-            {
-                trafficDataSets.ForEach(trafficDataSet => trafficDataSet.CalculateTotals());
-            } 
+            private void CalculateTrafficDataSetsTotals(ref List<TrafficDataRowSet> trafficDataSets)  => trafficDataSets.ForEach(trafficDataSet 
+                                                                                                      => trafficDataSet.CalculateTotals());
 
             //Tight coupled with TrafficDataRowSet class !!
             public Tuple<double,double,double> UnaccumulateTrafficData(Tuple<double,double> AccumulatedColledData, 
@@ -142,6 +135,8 @@ namespace ConsoleApplication
                                                                                              trafficDataRowSet.RunningTime);                                                                                                                
                     }
             }
+
+            public static double GetAverageRunningTime(List<TrafficDataRowSet> trafficDataRowSets) => trafficDataRowSets.Last().RunningTime / trafficDataRowSets.Count();
 
         #endregion
     }
