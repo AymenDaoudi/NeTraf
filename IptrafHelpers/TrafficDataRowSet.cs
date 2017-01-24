@@ -28,6 +28,23 @@ namespace ConsoleApplication
             CumulatedRunningTime = cumulatedRunningTime;
         }
 
+        public TrafficDataRowSet(double runningTime,
+                                 double cumulatedRunningTime,
+                                 Tuple<double,double,double> totalTotalTrafficData,
+                                 Tuple<double,double,double> totalIncomingTrafficData,
+                                 Tuple<double,double,double> totalOutgoingTrafficData)
+        {
+            TrafficDataRows = new List<TrafficDataRow>();
+            RunningTime = runningTime;
+            CumulatedRunningTime = cumulatedRunningTime;
+            TotalTotalTrafficData = totalTotalTrafficData;
+            TotalIncomingTrafficData = totalIncomingTrafficData;
+            TotalOutgoingTrafficData = totalOutgoingTrafficData;
+            AccumulatedTotalTotalTrafficData = new Tuple<double,double>(0,0);
+            AccumulatedTotalIncomingTrafficData = new Tuple<double,double>(0,0);
+            AccumulatedTotalOutgoingTrafficData = new Tuple<double,double>(0,0);
+        }
+
         public void CalculateTotals ()
         {
             AccumulatedTotalTotalTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.TotalTrafficData.Packets).Sum(),

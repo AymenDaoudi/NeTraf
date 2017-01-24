@@ -43,6 +43,12 @@ namespace ConsoleApplication
 
                     GetRealTrafficData(ref trafficDataRowSets);
                     
+                    //Just to simulate a start from 0
+                    trafficDataRowSets.Insert(0,new TrafficDataRowSet(0,0,new Tuple<double,double,double>(0,0,0),
+                                                                          new Tuple<double,double,double>(0,0,0),
+                                                                          new Tuple<double,double,double>(0,0,0)));
+                    
+                    
                 }
                 catch (FileNotFoundException exception)
                 {
@@ -136,7 +142,7 @@ namespace ConsoleApplication
                     }
             }
 
-            public static double GetAverageRunningTime(List<TrafficDataRowSet> trafficDataRowSets) => trafficDataRowSets.Last().RunningTime / trafficDataRowSets.Count();
+            public static double GetAverageRunningTime(List<TrafficDataRowSet> trafficDataRowSets) => trafficDataRowSets.Last().CumulatedRunningTime / trafficDataRowSets.Count();
 
         #endregion
     }

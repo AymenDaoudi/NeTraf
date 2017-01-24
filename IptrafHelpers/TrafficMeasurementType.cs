@@ -1,6 +1,6 @@
 namespace ConsoleApplication
 {
-    public enum DataUnitType
+    public enum TrafficMeasurementType
     {
         Packets,
         Bytes,
