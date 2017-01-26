@@ -2,79 +2,81 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static ConsoleApplication.HelperMethods;
+using static NeTraf.HelperMethods;
 using static System.Console;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public static class TrafficDataPrinter
     {
-        public static void PrintToOutputFile(List<TrafficDataRowSet> trafficDataRowSets, string outputFilePath, TrafficDataType trafficDataType, TrafficMeasurementType trafficMeasurementType)
+        public static void PrintToOutputFile(List<TrafficDataRowSet> trafficDataRowSets, 
+                                             string outputFilePath, 
+                                             TrafficDataType trafficDataType, 
+                                             TrafficMeasurementType trafficMeasurementType)
         {
             var stream = File.OpenWrite(outputFilePath);
             using (System.IO.StreamWriter file =  new System.IO.StreamWriter(stream))
             {
+                var unit = GetBytesConvertionTargetUnit(trafficDataRowSets,trafficDataType,trafficMeasurementType);
                 trafficDataRowSets.ForEach(trafficDataRowSet => 
                 {
-                    switch (trafficDataType)
-                    {
-                        case TrafficDataType.TotalData : 
-                        { 
-                            TrafficUnitType unit = TrafficUnitType.Bytes;
-                            switch (trafficMeasurementType)
-                            {
-                                case TrafficMeasurementType.Bytes : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList()); break;
-                                case TrafficMeasurementType.Rate : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item3).ToList()); break;
-                            }
-                            file.WriteLine(TrafficDataToOutput(trafficDataRowSet.TotalTotalTrafficData, trafficDataRowSet.CumulatedRunningTime, trafficMeasurementType, unit));
-                        }
-                        break;
-                        case TrafficDataType.IncomingData : 
-                        { 
-                            TrafficUnitType unit = TrafficUnitType.Bytes;
-                            switch (trafficMeasurementType)
-                            {
-                                case TrafficMeasurementType.Bytes : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item2).ToList()); break;
-                                case TrafficMeasurementType.Rate : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item3).ToList()); break;
-                            }
-                            file.WriteLine(TrafficDataToOutput(trafficDataRowSet.TotalIncomingTrafficData, trafficDataRowSet.CumulatedRunningTime, trafficMeasurementType, unit));
-                        }
-                        break;
-                        case TrafficDataType.OutgoingData : 
-                        {
-                            TrafficUnitType unit = TrafficUnitType.Bytes;
-                            switch (trafficMeasurementType)
-                            {
-                                case TrafficMeasurementType.Bytes : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item2).ToList()); break;
-                                case TrafficMeasurementType.Rate : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item3).ToList()); break;
-                            }
-                            file.WriteLine(TrafficDataToOutput(trafficDataRowSet.TotalOutgoingTrafficData, trafficDataRowSet.CumulatedRunningTime, trafficMeasurementType, unit));
-                        }
-                        break;
-                        default: 
-                        {
-                            TrafficUnitType unit = TrafficUnitType.Bytes;
-                            switch (trafficMeasurementType)
-                            {
-                                case TrafficMeasurementType.Bytes : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList()); break;
-                                case TrafficMeasurementType.Rate : unit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item3).ToList()); break;
-                            }
-                            file.WriteLine(TrafficDataToOutput(trafficDataRowSet.TotalTotalTrafficData, trafficDataRowSet.CumulatedRunningTime, trafficMeasurementType, unit));
-                        }
-                        break;
-                    }
+                    file.WriteLine(TrafficDataToOutput(trafficDataRowSet, 
+                                                       trafficDataRowSet.CumulatedRunningTime, 
+                                                       trafficDataType,
+                                                       trafficMeasurementType, 
+                                                       unit));
                 });
             }
         }
 
-        private static string TrafficDataToOutput(Tuple<double,double,double> trafficData, double cumulatedRunningTime, TrafficMeasurementType trafficMeasurementType, TrafficUnitType trafficUnitType)
+        private static string TrafficDataToOutput(TrafficDataRowSet trafficDataRowSet, 
+                                                  double cumulatedRunningTime, 
+                                                  TrafficDataType trafficDataType,
+                                                  TrafficMeasurementType trafficMeasurementType, 
+                                                  TrafficUnitType trafficUnitType)
         {
-            switch (trafficMeasurementType)
+            switch (trafficDataType)
             {
-                case TrafficMeasurementType.Packets : return $"{trafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
-                case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
-                case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
-                default: return $"{trafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                case TrafficDataType.TotalData : 
+                {
+                    switch (trafficMeasurementType)
+                    {
+                        case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalTotalTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        default: return $"{trafficDataRowSet.TotalIncomingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                    }
+                }
+                case TrafficDataType.IncomingData : 
+                {
+                    switch (trafficMeasurementType)
+                    {
+                        case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalIncomingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalIncomingTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalIncomingTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        default: return $"{trafficDataRowSet.TotalIncomingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                    }
+                }
+                case TrafficDataType.OutgoingData : 
+                {
+                    switch (trafficMeasurementType)
+                    {
+                        case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalOutgoingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalOutgoingTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalOutgoingTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        default: return $"{trafficDataRowSet.TotalOutgoingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                    }
+                }
+                default: 
+                {
+                    switch (trafficMeasurementType)
+                    {
+                        case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalTotalTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        default: return $"{trafficDataRowSet.TotalTotalTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
+                    }
+                }
             }
         }
 
@@ -87,21 +89,20 @@ namespace ConsoleApplication
                 WriteLine();
                 WriteLine($"During {ConvertTime(trafficDataRowSet.RunningTime)} :");
                 WriteLine();
-                
-                bytesUnit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList());
-                rateUnit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item3).ToList());
-                ForegroundColor = ConsoleColor.White;
-                WriteLine($"TotalTrafficData : {trafficDataRowSet.TotalTotalTrafficData.Print(bytesUnit,rateUnit ,false)}" );
 
-                bytesUnit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item2).ToList());
-                rateUnit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item3).ToList());
-                ForegroundColor = ConsoleColor.Green;
-                WriteLine($"IncomingTrafficData : {trafficDataRowSet.TotalIncomingTrafficData.Print(bytesUnit,rateUnit,false)}");
-
-                bytesUnit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item2).ToList());
-                rateUnit = GetBytesConvertionTargetUnit(trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item3).ToList());
-                ForegroundColor = ConsoleColor.Red;
-                WriteLine($"OutgoingTrafficData : {trafficDataRowSet.TotalOutgoingTrafficData.Print(bytesUnit,rateUnit,false)}");
+                foreach (TrafficDataType trafficDataType in Enum.GetValues(typeof(TrafficDataType)))
+                {
+                    bytesUnit = GetBytesConvertionTargetUnit(trafficDataRowSets,trafficDataType,TrafficMeasurementType.Bytes);
+                    rateUnit = GetBytesConvertionTargetUnit(trafficDataRowSets,trafficDataType,TrafficMeasurementType.Rate);
+                    ForegroundColor = ConsoleColor.White;
+                    switch (trafficDataType)
+                    {
+                        case TrafficDataType.TotalData    : Write("TotalTrafficData : "); break; 
+                        case TrafficDataType.IncomingData : ForegroundColor = ConsoleColor.Green; Write("IncomingTrafficData : "); break; 
+                        case TrafficDataType.OutgoingData : ForegroundColor = ConsoleColor.Red; Write("OutgoingTrafficData : "); break; 
+                    }
+                    WriteLine(trafficDataRowSet.Print(trafficDataType,bytesUnit,rateUnit ,false));
+                }
                 ForegroundColor = ConsoleColor.White; 
                 WriteLine("__________________________________________________________________________");
             });

@@ -3,12 +3,53 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public static class HelperMethods
     {
-        public static TrafficUnitType GetBytesConvertionTargetUnit(List<double> allBytesValues)
+        public static TrafficUnitType GetBytesConvertionTargetUnit(List<TrafficDataRowSet> trafficDataRowSets, 
+                                                                   TrafficDataType trafficDataType, 
+                                                                   TrafficMeasurementType trafficMeasurementType)
         {
+            List<double> allBytesValues ;
+
+            switch (trafficMeasurementType)
+            {
+                case TrafficMeasurementType.Bytes :
+                {
+                    switch (trafficDataType)
+                    {
+                        case TrafficDataType.TotalData    : allBytesValues = trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList();    break;
+                        case TrafficDataType.IncomingData : allBytesValues = trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item2).ToList(); break;
+                        case TrafficDataType.OutgoingData : allBytesValues = trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item2).ToList(); break;
+                        default : allBytesValues = trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList();    break;
+                    }
+                }
+                break;
+                case TrafficMeasurementType.Rate  :
+                {
+                    switch (trafficDataType)
+                    {
+                        case TrafficDataType.TotalData    : allBytesValues = trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item3).ToList();    break;
+                        case TrafficDataType.IncomingData : allBytesValues = trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item3).ToList(); break;
+                        case TrafficDataType.OutgoingData : allBytesValues = trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item3).ToList(); break;
+                        default : allBytesValues = trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item3).ToList();    break;
+                    }
+                }
+                break;
+                default:
+                {
+                    switch (trafficDataType)
+                    {
+                        case TrafficDataType.TotalData    : allBytesValues = trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList();    break;
+                        case TrafficDataType.IncomingData : allBytesValues = trafficDataRowSets.Select(_ => _.TotalIncomingTrafficData.Item2).ToList(); break;
+                        case TrafficDataType.OutgoingData : allBytesValues = trafficDataRowSets.Select(_ => _.TotalOutgoingTrafficData.Item2).ToList(); break;
+                        default : allBytesValues = trafficDataRowSets.Select(_ => _.TotalTotalTrafficData.Item2).ToList();    break;
+                    }
+                }
+                break;
+            }
+
             var trafficInMBytes = allBytesValues.Count(_ => _ > 1048576);
             var trafficInKBytes = allBytesValues.Count(_ => _ > 1024 && _ < 1048576);
             var trafficInBytes = allBytesValues.Count(_ => _ < 1024);
@@ -48,11 +89,5 @@ namespace ConsoleApplication
             TimeSpan time = TimeSpan.FromSeconds(seconds);
             return time .ToString(@"hh\:mm\:ss");
         }
-
-        public static void FileChecker(string filePath)
-        {
-            if (!File.Exists(filePath)) File.Create(filePath);
-        }
-
     }
 }

@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/bin/Debug/netcoreapp1.1/DotNet Core projects.dll",
+            "program": "${workspaceRoot}/bin/Debug/netcoreapp1.1/NeTraf.dll",
             "args": [],
             "cwd": "${workspaceRoot}",
             "externalConsole": false,

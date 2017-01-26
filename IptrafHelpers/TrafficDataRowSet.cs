@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static System.Console;
-using static ConsoleApplication.HelperMethods;
+using static NeTraf.HelperMethods;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public class TrafficDataRowSet
     {
@@ -44,7 +44,6 @@ namespace ConsoleApplication
             AccumulatedTotalIncomingTrafficData = new Tuple<double,double>(0,0);
             AccumulatedTotalOutgoingTrafficData = new Tuple<double,double>(0,0);
         }
-
         public void CalculateTotals ()
         {
             AccumulatedTotalTotalTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.TotalTrafficData.Packets).Sum(),
@@ -55,6 +54,27 @@ namespace ConsoleApplication
                                                                           
             AccumulatedTotalOutgoingTrafficData =  new Tuple<double,double>(TrafficDataRows.Select(data => data.OutgoingTrafficData.Packets).Sum(),
                                                                             TrafficDataRows.Select(data => data.OutgoingTrafficData.Bytes).Sum()); 
+        }
+
+        public string Print(TrafficDataType trafficDataType, TrafficUnitType bytesUnitType, TrafficUnitType rateUnitType, bool dataOnly)
+        {
+            Tuple<double,double,double> trafficData;
+            switch (trafficDataType)
+            {
+                case TrafficDataType.TotalData    : trafficData = TotalTotalTrafficData; break;
+                case TrafficDataType.IncomingData : trafficData = TotalIncomingTrafficData; break;
+                case TrafficDataType.OutgoingData : trafficData = TotalOutgoingTrafficData; break;
+                default : trafficData = TotalTotalTrafficData; break;
+            }
+            var convertedBytes = ConvertBytes(trafficData.Item2,bytesUnitType);
+            var convertedRate = ConvertBytes(trafficData.Item3,rateUnitType);
+            if (dataOnly)
+            {
+                return $" {trafficData.Item1},{String.Format("{0:0.00}", convertedBytes.Item1)},{String.Format("{0:0.00}", convertedRate.Item1)}";
+            }
+            return $" Packets : {trafficData.Item1} packets,"+ 
+                   $" Bytes : {String.Format("{0:0.00}", convertedBytes.Item1)} {convertedBytes.Item2} ," +
+                   $" Rate : {String.Format("{0:0.00}", convertedRate.Item1)} {convertedRate.Item2}/s .";
         }        
     }
 }

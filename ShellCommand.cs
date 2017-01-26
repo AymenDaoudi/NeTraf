@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public class ShellCommand
     {
@@ -31,14 +31,14 @@ namespace ConsoleApplication
                 CorrespondingProcess.Start ();
             }
 
-            public void Stop()
+            public static void Stop(string commandName)
             {
-                CorrespondingProcess = new Process();
-                CorrespondingProcess.StartInfo.FileName = "/bin/bash";
-                CorrespondingProcess.StartInfo.Arguments = $"-c killall \"{CorrespondingProcess.ProcessName} \"";
-                CorrespondingProcess.StartInfo.UseShellExecute = false;
-                CorrespondingProcess.StartInfo.RedirectStandardOutput = true;
-                CorrespondingProcess.Start();
+                var processes = Process.GetProcessesByName(commandName);
+                foreach (var process in processes)
+                {
+                    process.Kill();
+                    process.WaitForExit();
+                } 
             }
         #endregion
     }  

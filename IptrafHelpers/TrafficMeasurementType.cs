@@ -1,4 +1,4 @@
-namespace ConsoleApplication
+namespace NeTraf
 {
     public enum TrafficMeasurementType
     {

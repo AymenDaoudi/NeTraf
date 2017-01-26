@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using static System.Console;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public class NetstatParser
     {
         #region Fields
             private const string _moreThanTwoSpacesPattern = @"\s{2,}";
             private List<string> _loggedLines;
+            private FileStream _fileStream;
         #endregion
         #region Properties
             public string FilePath { get; }
@@ -19,6 +20,7 @@ namespace ConsoleApplication
         public NetstatParser(string filePath)
         {
             FilePath = filePath;
+            _fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
 
@@ -28,7 +30,13 @@ namespace ConsoleApplication
                 List<uint> ports = new List<uint>();
                 try
                 {
-                    _loggedLines = File.ReadAllLines(FilePath).ToList();
+                    using (_fileStream)
+                    {
+                        using (var streamReader = new StreamReader(_fileStream, System.Text.Encoding.ASCII)) 
+                        {
+                            _loggedLines = streamReader.ReadAllLines().ToList();
+                        }
+                    }
                 
                     var collectedData = SplitLinesByCollumns();
                     
@@ -53,7 +61,10 @@ namespace ConsoleApplication
                 return collectedData;
             } 
 
-            private List<string> GetTrafficSourceColumn(List<List<string>> collectedData) => collectedData.Select(_ => _[2].Split(' ').Last()).ToList();
+            private List<string> GetTrafficSourceColumn(List<List<string>> collectedData)
+            {
+                return collectedData.Select(_ => _[2].Split(' ').Last()).ToList();
+            }
 
             private static uint ExtractPortNumber(string sourceInfo)
             {

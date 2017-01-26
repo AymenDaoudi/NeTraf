@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using static System.Console;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public class IptrafParser
     {
         #region Fields
             private List<string> _loggedRows;
             private const string _unsignedIntegerPattern = @"\d+";
+            private FileStream _fileStream;
         #endregion
 
         #region Properties
@@ -21,6 +22,7 @@ namespace ConsoleApplication
         public IptrafParser(string filePath)
         {
             FilePath = filePath;
+            _fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
 
@@ -30,7 +32,13 @@ namespace ConsoleApplication
                 var trafficDataRowSets = new List<TrafficDataRowSet>();
                 try
                 {
-                    _loggedRows = File.ReadAllLines(FilePath).ToList();
+                    using (_fileStream)
+                    {
+                        using (var streamReader = new StreamReader(_fileStream, System.Text.Encoding.ASCII)) 
+                        {
+                            _loggedRows = streamReader.ReadAllLines().ToList();
+                        }
+                    }
                     DeleteEmptyRows(ref _loggedRows);
 
                     var trafficDataGroups = ToTrafficDataGroups(_loggedRows);                    

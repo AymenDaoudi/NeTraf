@@ -1,12 +1,21 @@
 using System.Diagnostics;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     //Suports only one graph for the meantime
     public class Plotter
     {
-        #region Fields
-            
+        #region Consts
+            public const string _totalTrafficRatePlotTitle = "Total Traffic Rate";
+            public const string _totalTrafficBytesPlotTitle = "Total Traffic Bytes";
+            public const string _totalTrafficPacketsPlotTitle = "Total Traffic Packets";
+            public const string _incomingTrafficRatePlotTitle = "Incoming Traffic Rate";
+            public const string _outgoingTrafficRatePlotTitle = "Outgoing Traffic Rate";
+            public const string _incomingTrafficBytesPlotTitle = "Incoming Traffic Bytes";
+            public const string _outgoingTrafficBytesPlotTitle = "Outgoing Traffic Bytes";
+            public const string _incomingTrafficPacketsPlotTitle = "Incoming Traffic Packets";
+            public const string _outgoingTrafficPacketsPlotTitle = "Outgoing Traffic Packets";
+            public const string _xLabel = "Time";
 
         #endregion
 

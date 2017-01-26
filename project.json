@@ -2,8 +2,11 @@
   "version": "1.0.0-*",
   "buildOptions": {
     "debugType": "portable",
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "copyToOutput": ["/SettingFiles/DataPlotSettings.txt",
+                     "/SettingFiles/RatePlotSettings.txt"]
   },
+
   "dependencies": {},
   "frameworks": {
     "netcoreapp1.1": {
@@ -11,7 +14,9 @@
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.1.0"
-        }
+        },
+        "Microsoft.Extensions.PlatformAbstractions": "1.1.0",
+        "System.Threading.Thread": "4.3.0"
       },
       "imports": "dnxcore50"
     }

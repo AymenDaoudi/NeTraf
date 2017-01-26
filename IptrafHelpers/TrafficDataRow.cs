@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace ConsoleApplication
+namespace NeTraf
 {
     public class TrafficDataRow
     {
