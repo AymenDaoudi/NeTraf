@@ -6,11 +6,6 @@ using static NeTraf.FileManager;
 using static NeTraf.Plotter;
 using static System.IO.Path;
 using System.Collections.Generic;
-using Microsoft.Extensions.PlatformAbstractions;
-using System.Reflection;
-using System.Text;
-using System.Diagnostics;
-using System.Threading;
 
 namespace NeTraf
 {
@@ -18,7 +13,6 @@ namespace NeTraf
     {
 
         #region Fields
-
             private static string _ratePlotSettingsFilePath ;
             private static string _dataPlotSettingsFilePath ;
             private static string _netstatOutputFilePath    ;
@@ -81,19 +75,21 @@ namespace NeTraf
             // PrintGraphicalOutputFiles(trafficDataRowSets);
 
 
-
-            string rootOutputFolderPath = "";
+            string interfaceNetwork = "";
             string processName = "";
+            string rootOutputFolderPath = "";
 
             if (args.Length == 0)
             {
+                Write("Interface network : "); interfaceNetwork = ReadLine();
                 Write("Process Name  : "); processName = ReadLine();
                 Write("Output Folder : "); rootOutputFolderPath = ReadLine();
             }
             else
             {
-                rootOutputFolderPath = args[0];
+                interfaceNetwork = args[0];
                 processName = args[1];
+                rootOutputFolderPath = args[2];
             }
 
             _ratePlotSettingsFilePath =  GetPlotSettingsFilePaths(RatePlotSettingsFileName);
@@ -117,7 +113,7 @@ namespace NeTraf
             var netstatCommand = new ShellCommand("/bin/bash",'c', $"\"netstat -c --all --tcp --udp --program | grep {processName} > {_netstatOutputFilePath}\"", "");
             netstatCommand.Execute();
 
-            var iptrafCommand = new ShellCommand("/bin/bash",'c', $"\"iptraf -u -s ens33 -B -L {_iptrafOutputFilePath}\"", "");
+            var iptrafCommand = new ShellCommand("/bin/bash",'c', $"\"iptraf -B -u -s {interfaceNetwork} -L {_iptrafOutputFilePath}\"", "");
             iptrafCommand.Execute();
 
             WriteLine("Start parsing ? (y/n) ");
@@ -130,7 +126,6 @@ namespace NeTraf
                 {
                     ShellCommand.Stop("iptraf");
                     ShellCommand.Stop("netstat");
-                    
                     break;
                 }
                 else if (ReadKey().Key == System.ConsoleKey.N)
@@ -143,7 +138,6 @@ namespace NeTraf
                 }
             }
             
-
             if (isParsingAllowed)
             {   
                 // 4) Get the corresponding process' ports from Netstat output
@@ -158,6 +152,7 @@ namespace NeTraf
                 PrintGraphicalOutputFiles(trafficDataRowSets);
             }
             
+            CleanIptraf();
         }
 
 

@@ -25,7 +25,11 @@ namespace NeTraf
             {
                 CorrespondingProcess = new Process();
                 CorrespondingProcess.StartInfo.FileName = Host;
-                CorrespondingProcess.StartInfo.Arguments = $"-{SwitchCharacter} {Command} {AdditionalArgument}";
+                if (AdditionalArgument == "") CorrespondingProcess.StartInfo.Arguments = $"-{SwitchCharacter} {Command}";
+                else
+                {
+                    CorrespondingProcess.StartInfo.Arguments = $"-{SwitchCharacter} {Command} {AdditionalArgument}";
+                }
                 CorrespondingProcess.StartInfo.UseShellExecute = false; 
                 CorrespondingProcess.StartInfo.RedirectStandardOutput = true;
                 CorrespondingProcess.Start ();
