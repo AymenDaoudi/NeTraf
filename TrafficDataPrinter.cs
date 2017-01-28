@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using static NeTraf.HelperMethods;
 using static System.Console;
 
@@ -42,8 +41,8 @@ namespace NeTraf
                     switch (trafficMeasurementType)
                     {
                         case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalTotalTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes   : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate    : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
                         default: return $"{trafficDataRowSet.TotalIncomingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
                     }
                 }
@@ -52,8 +51,8 @@ namespace NeTraf
                     switch (trafficMeasurementType)
                     {
                         case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalIncomingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalIncomingTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalIncomingTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes   : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalIncomingTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate    : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalIncomingTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
                         default: return $"{trafficDataRowSet.TotalIncomingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
                     }
                 }
@@ -62,8 +61,8 @@ namespace NeTraf
                     switch (trafficMeasurementType)
                     {
                         case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalOutgoingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalOutgoingTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalOutgoingTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes   : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalOutgoingTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate    : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalOutgoingTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
                         default: return $"{trafficDataRowSet.TotalOutgoingTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
                     }
                 }
@@ -72,8 +71,8 @@ namespace NeTraf
                     switch (trafficMeasurementType)
                     {
                         case TrafficMeasurementType.Packets : return $"{trafficDataRowSet.TotalTotalTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Bytes : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
-                        case TrafficMeasurementType.Rate : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Bytes   : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item2, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
+                        case TrafficMeasurementType.Rate    : return $"{String.Format("{0:0.00}", ConvertBytes(trafficDataRowSet.TotalTotalTrafficData.Item3, trafficUnitType).Item1)},{ConvertTime(cumulatedRunningTime)}"; 
                         default: return $"{trafficDataRowSet.TotalTotalTrafficData.Item1},{ConvertTime(cumulatedRunningTime)}"; 
                     }
                 }
@@ -83,7 +82,8 @@ namespace NeTraf
         public static void PrintToConsole(List<TrafficDataRowSet> trafficDataRowSets)
         {
             var bytesUnit = TrafficUnitType.Bytes;
-            var rateUnit = TrafficUnitType.Bytes; 
+            var rateUnit  = TrafficUnitType.Bytes; 
+
             trafficDataRowSets.ForEach(trafficDataRowSet => 
             {
                 WriteLine();
@@ -93,7 +93,7 @@ namespace NeTraf
                 foreach (TrafficDataType trafficDataType in Enum.GetValues(typeof(TrafficDataType)))
                 {
                     bytesUnit = GetBytesConvertionTargetUnit(trafficDataRowSets,trafficDataType,TrafficMeasurementType.Bytes);
-                    rateUnit = GetBytesConvertionTargetUnit(trafficDataRowSets,trafficDataType,TrafficMeasurementType.Rate);
+                    rateUnit  = GetBytesConvertionTargetUnit(trafficDataRowSets,trafficDataType,TrafficMeasurementType.Rate);
                     ForegroundColor = ConsoleColor.White;
                     switch (trafficDataType)
                     {
@@ -107,7 +107,5 @@ namespace NeTraf
                 WriteLine("__________________________________________________________________________");
             });
         }
-
-        
     }
 }

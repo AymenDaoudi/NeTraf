@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.PlatformAbstractions;
 
@@ -53,14 +52,15 @@ namespace NeTraf
 
             public static string GetPlotSettingsFilePaths(string fileName)
             {
-                var applicationBasePath = PlatformServices.Default.Application.ApplicationBasePath;
-                var applicationBaseDirectory = Directory.GetParent(applicationBasePath);
+                string applicationBasePath = PlatformServices.Default.Application.ApplicationBasePath;
+                DirectoryInfo applicationBaseDirectory = Directory.GetParent(applicationBasePath);
                 return Path.Combine(applicationBasePath,"SettingFiles",fileName);
             }
 
             public static void CleanIptraf()
             {
-                var iptrafFiles = Directory.GetFiles(@"/var/run/iptraf/");
+                string[] iptrafFiles = Directory.GetFiles(@"/var/run/iptraf/");
+
                 foreach (var file in iptrafFiles)
                 {
                     if (file != @"/var/run/iptraf/iptraf-processcount.dat") File.Delete(file);

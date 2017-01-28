@@ -13,6 +13,7 @@ namespace NeTraf
             private List<string> _loggedLines;
             private FileStream _fileStream;
         #endregion
+
         #region Properties
             public string FilePath { get; }
         #endregion
@@ -23,11 +24,10 @@ namespace NeTraf
             _fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
-
         #region Methods
             public List<uint> GetPortsFromNetstatOutput()
             {
-                List<uint> ports = new List<uint>();
+                var ports = new List<uint>();
                 try
                 {
                     using (_fileStream)
@@ -37,11 +37,8 @@ namespace NeTraf
                             _loggedLines = streamReader.ReadAllLines().ToList();
                         }
                     }
-                
-                    var collectedData = SplitLinesByCollumns();
-                    
+                    var collectedData = SplitLinesByCollumns();  
                     var trafficSourceInfo = GetTrafficSourceColumn(collectedData);
-
                     ports = trafficSourceInfo.Select(sourceInfo => ExtractPortNumber(sourceInfo)).Distinct().ToList();
                 }
                 catch (FileNotFoundException exception)
@@ -49,9 +46,7 @@ namespace NeTraf
                     ports = null;
                     WriteLine($"The Netstat ouput file : {exception.FileName} was not found !");
                 }
-                
                 return ports;
-                
             }
                 
             private List<List<string>> SplitLinesByCollumns()
@@ -61,18 +56,15 @@ namespace NeTraf
                 return collectedData;
             } 
 
-            private List<string> GetTrafficSourceColumn(List<List<string>> collectedData)
-            {
-                return collectedData.Select(_ => _[2].Split(' ').Last()).ToList();
-            }
+            private List<string> GetTrafficSourceColumn(List<List<string>> collectedData) => collectedData.Select(_ => _[2].Split(' ').Last()).ToList();
 
             private static uint ExtractPortNumber(string sourceInfo)
             {
-                string port = "";
+                var port = "";
                 uint portNumber;
                 try
                 {
-                    for (int i = sourceInfo.Length - 1; sourceInfo[i] != ':'; i--)
+                    for (var i = sourceInfo.Length - 1; sourceInfo[i] != ':'; i--)
                     {
                         port = port.Insert(0,sourceInfo[i].ToString());
                     }
@@ -82,7 +74,6 @@ namespace NeTraf
                 {
                     return 0;
                 }
-
                 return portNumber;
             }
 

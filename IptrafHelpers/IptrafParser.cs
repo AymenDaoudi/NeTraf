@@ -25,9 +25,8 @@ namespace NeTraf
             _fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         }
 
-
         #region Methods
-            public List<TrafficDataRowSet> GetIptrafTrafficDataSets(List<uint> netstatPorts)
+            public List<TrafficDataRowSet> GetIptrafTrafficDataRowSets(List<uint> netstatPorts)
             {
                 var trafficDataRowSets = new List<TrafficDataRowSet>();
                 try
@@ -39,8 +38,8 @@ namespace NeTraf
                             _loggedRows = streamReader.ReadAllLines().ToList();
                         }
                     }
-                    DeleteEmptyRows(ref _loggedRows);
 
+                    DeleteEmptyRows(ref _loggedRows);
                     var trafficDataGroups = ToTrafficDataGroups(_loggedRows);                    
                     
                     trafficDataGroups.ForEach(_ => trafficDataRowSets.Add(new TrafficDataRowSet(_.Item1,_.Item2,_.Item3))); 
@@ -55,8 +54,6 @@ namespace NeTraf
                     trafficDataRowSets.Insert(0,new TrafficDataRowSet(0,0,new Tuple<double,double,double>(0,0,0),
                                                                           new Tuple<double,double,double>(0,0,0),
                                                                           new Tuple<double,double,double>(0,0,0)));
-                    
-                    
                 }
                 catch (FileNotFoundException exception)
                 {
@@ -67,10 +64,7 @@ namespace NeTraf
                 return trafficDataRowSets;
             }
 
-            public static void DeleteEmptyRows(ref List<string> loggedRows)
-            {
-                loggedRows.RemoveAll(row => row == string.Empty);
-            }
+            public static void DeleteEmptyRows(ref List<string> loggedRows) => loggedRows.RemoveAll(row => row == string.Empty);
 
             public List<Tuple<double,double,List<string>>> ToTrafficDataGroups(List<string> loggedLines)
             {
@@ -80,7 +74,8 @@ namespace NeTraf
                 var loggedDataTrafficGroup = new List<string>();
                 var runningTime = 0d;
                 var previousRunningTime = 0d;
-                for (int i = 0; i < loggedLines.Count; i++)
+
+                for (var i = 0; i < loggedLines.Count; i++)
                 {
                     if (loggedLines[i].Contains("Running time"))
                     {
@@ -89,11 +84,11 @@ namespace NeTraf
                         loggedRowGroups.Add(new Tuple<double, double, List<string>>(runningTime - previousRunningTime,runningTime,loggedDataTrafficGroup));
                         loggedDataTrafficGroup = new List<string>();
                         continue;
-                    }            
+                    }        
+
                     if (loggedLines[i].Contains("***")) continue;                  
                     loggedDataTrafficGroup.Add(loggedLines[i]);
                 }
-
                 return loggedRowGroups;
             }
 
@@ -109,11 +104,8 @@ namespace NeTraf
                                                                        double timeLapse)
             {
                 var addedPackets = NextAccumulatedColledData.Item1 - AccumulatedColledData.Item1;
-
                 var addedBytes = NextAccumulatedColledData.Item2 - AccumulatedColledData.Item2;
-
                 var rate = addedBytes/timeLapse;
-
                 return new Tuple<double,double,double>(addedPackets,addedBytes,rate);
             }
 
@@ -125,14 +117,14 @@ namespace NeTraf
                         if(trafficDataRowSets.IndexOf(trafficDataRowSet) == 0) 
                         {
                             trafficDataRowSet.TotalTotalTrafficData = UnaccumulateTrafficData(new Tuple<double, double>(0,0),
-                                                                                    trafficDataRowSet.AccumulatedTotalTotalTrafficData,
-                                                                                    trafficDataRowSet.RunningTime);
+                                                                                              trafficDataRowSet.AccumulatedTotalTotalTrafficData,
+                                                                                              trafficDataRowSet.RunningTime);
                             trafficDataRowSet.TotalIncomingTrafficData = UnaccumulateTrafficData(new Tuple<double, double>(0,0),
-                                                                                    trafficDataRowSet.AccumulatedTotalIncomingTrafficData,
-                                                                                    trafficDataRowSet.RunningTime);
+                                                                                              trafficDataRowSet.AccumulatedTotalIncomingTrafficData,
+                                                                                              trafficDataRowSet.RunningTime);
                             trafficDataRowSet.TotalOutgoingTrafficData = UnaccumulateTrafficData(new Tuple<double, double>(0,0),
-                                                                                    trafficDataRowSet.AccumulatedTotalOutgoingTrafficData,
-                                                                                    trafficDataRowSet.RunningTime);
+                                                                                              trafficDataRowSet.AccumulatedTotalOutgoingTrafficData,
+                                                                                              trafficDataRowSet.RunningTime);
                             continue;
                         }
 

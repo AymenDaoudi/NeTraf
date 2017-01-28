@@ -19,8 +19,8 @@ namespace NeTraf
         }
         public static string Print(this Tuple<double, double, double> tuple, TrafficUnitType bytesUnitType, TrafficUnitType rateUnitType, bool dataOnly)
         {
-            var convertedBytes = ConvertBytes(tuple.Item2,bytesUnitType);
-            var convertedRate = ConvertBytes(tuple.Item3,rateUnitType);
+            Tuple<double,string> convertedBytes = ConvertBytes(tuple.Item2,bytesUnitType);
+            Tuple<double,string> convertedRate = ConvertBytes(tuple.Item3,rateUnitType);
             if (dataOnly)
             {
                 return $" {tuple.Item1},{String.Format("{0:0.00}", convertedBytes.Item1)},{String.Format("{0:0.00}", convertedRate.Item1)}";

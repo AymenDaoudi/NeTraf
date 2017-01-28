@@ -42,33 +42,32 @@ namespace NeTraf
                        string yLabel,
                        string xTics)
         {
-            DataFilePath = dataFilePath;
-            KeyTitle = keyTitle;
-            OutputFilePath = outputFilePath;
+            DataFilePath     = dataFilePath;
+            KeyTitle         = keyTitle;
+            OutputFilePath   = outputFilePath;
             SettingsFilePath = settingsFilePath;
-            Title = title;
-            XLabel = xLabel;
-            YLabel = yLabel;
-            XTics = xTics;
+            Title            = title;
+            XLabel           = xLabel;
+            YLabel           = yLabel;
+            XTics            = xTics;
         }
 
         #region Methods
-
-        public Process Plot()
-        {
-            var commandString = $"\"filename='{DataFilePath}';" +
-                                  $"keyTitle='{KeyTitle}';" +
-                                  $"output='{OutputFilePath}';" +
-                                  $"xLabel='{XLabel}';" +
-                                  $"yLabel='{YLabel}';" +
-                                  $"title='{Title}';" +
-                                  $"xTics='{XTics}'\"";
-
-            var gnuplotCommand = new ShellCommand("/usr/bin/gnuplot",'e', commandString, SettingsFilePath);
-
-            gnuplotCommand.Execute();
-            return gnuplotCommand.CorrespondingProcess;
-        }   
+            public Process Plot()
+            {
+                var commandString = $"\"filename='{DataFilePath}';" +
+                                    $"keyTitle='{KeyTitle}';"       +
+                                    $"output='{OutputFilePath}';"   +
+                                    $"xLabel='{XLabel}';"           +
+                                    $"yLabel='{YLabel}';"           +
+                                    $"title='{Title}';"             +
+                                    $"xTics='{XTics}'\"";
+                                
+                var gnuplotCommand = new ShellCommand("/usr/bin/gnuplot",'e', commandString, SettingsFilePath);
+                gnuplotCommand.Execute();
+            
+                return gnuplotCommand.CorrespondingProcess;
+            }   
         #endregion
     }
 }

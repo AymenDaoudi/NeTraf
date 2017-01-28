@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace NeTraf
@@ -52,7 +51,7 @@ namespace NeTraf
 
             var trafficInMBytes = allBytesValues.Count(_ => _ > 1048576);
             var trafficInKBytes = allBytesValues.Count(_ => _ > 1024 && _ < 1048576);
-            var trafficInBytes = allBytesValues.Count(_ => _ < 1024);
+            var trafficInBytes  = allBytesValues.Count(_ => _ < 1024);
 
             var maxCount = new List<int>(){trafficInBytes,trafficInKBytes,trafficInMBytes}.Max();
 
@@ -64,8 +63,8 @@ namespace NeTraf
 
         public static Tuple<double,string> ConvertBytes(double bytes, TrafficUnitType trafficUnitType)
         {
-            string unit = "Bytes";
-            double convertedBytes = bytes;
+            var unit = "Bytes";
+            var convertedBytes = bytes;
             switch (trafficUnitType)
             {
                 case TrafficUnitType.KiloBytes : 
@@ -76,8 +75,8 @@ namespace NeTraf
                 break;
                 case TrafficUnitType.MegaBytes : 
                 {
-                   convertedBytes = bytes / 1048576;
-                unit = "MB";
+                    convertedBytes = bytes / 1048576;
+                    unit = "MB";
                 }
                 break;
             }
@@ -86,8 +85,8 @@ namespace NeTraf
 
         public static string ConvertTime(double seconds)
         {
-            TimeSpan time = TimeSpan.FromSeconds(seconds);
-            return time .ToString(@"hh\:mm\:ss");
+            var timeSpan = TimeSpan.FromSeconds(seconds);
+            return timeSpan.ToString(@"hh\:mm\:ss");
         }
     }
 }
