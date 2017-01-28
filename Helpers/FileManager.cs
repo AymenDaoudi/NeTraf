@@ -63,10 +63,7 @@ namespace NeTraf
                 var iptrafFiles = Directory.GetFiles(@"/var/run/iptraf/");
                 foreach (var file in iptrafFiles)
                 {
-                    if (file != @"/var/run/iptraf/iptraf-processcount.dat")
-                    {
-                        File.Delete(file);   
-                    }
+                    if (file != @"/var/run/iptraf/iptraf-processcount.dat") File.Delete(file);
                 } 
 
             }

@@ -6,6 +6,8 @@ using static NeTraf.FileManager;
 using static NeTraf.Plotter;
 using static System.IO.Path;
 using System.Collections.Generic;
+using System.Threading;
+using System;
 
 namespace NeTraf
 {
@@ -13,148 +15,144 @@ namespace NeTraf
     {
 
         #region Fields
-            private static string _ratePlotSettingsFilePath ;
-            private static string _dataPlotSettingsFilePath ;
-            private static string _netstatOutputFilePath    ;
-            private static string _iptrafOutputFilePath     ;
-            private static string _totalTrafficPacketsRawOutputFilePath    ;
-            private static string _totalTrafficBytesRawOutputFilePath     ;
-            private static string _totalTrafficRateRawOutputFilePath       ;
-            private static string _incomingTrafficPacketsRawOutputFilePath ;
-            private static string _outgoingTrafficPacketsRawOutputFilePath ;
-            private static string _incomingTrafficBytesRawOutputFilePath   ;
-            private static string _outgoingTrafficBytesRawOutputFilePath   ;
-            private static string _incomingTrafficRateRawOutputFilePath    ;
-            private static string _outgoingTrafficRateRawOutputFilePath    ;
+            #region SettingFiles
+                private static string _ratePlotSettingsFilePath ;
+                private static string _dataPlotSettingsFilePath ;
 
-            private static string _totalTrafficPacketsGraphicalOutputFilePath    ;
-            private static string _totalTrafficBytesGraphicalOutputFilePath     ;
-            private static string _totalTrafficRateGraphicalOutputFilePath       ;
-            private static string _incomingTrafficPacketsGraphicalOutputFilePath ;
-            private static string _outgoingTrafficPacketsGraphicalOutputFilePath ;
-            private static string _incomingTrafficBytesGraphicalOutputFilePath   ;
-            private static string _outgoingTrafficBytesGraphicalOutputFilePath   ;
-            private static string _incomingTrafficRateGraphicalOutputFilePath    ;
-            private static string _outgoingTrafficRateGraphicalOutputFilePath    ;
+            #endregion
 
+            #region NetstatIptrafFiles
+                private static string _netstatOutputFilePath    ;
+                private static string _iptrafOutputFilePath     ;
+            #endregion
+
+            #region RawOuputFiles
+                private static string _totalTrafficPacketsRawOutputFilePath    ;
+                private static string _totalTrafficBytesRawOutputFilePath     ;
+                private static string _totalTrafficRateRawOutputFilePath       ;
+                private static string _incomingTrafficPacketsRawOutputFilePath ;
+                private static string _outgoingTrafficPacketsRawOutputFilePath ;
+                private static string _incomingTrafficBytesRawOutputFilePath   ;
+                private static string _outgoingTrafficBytesRawOutputFilePath   ;
+                private static string _incomingTrafficRateRawOutputFilePath    ;
+                private static string _outgoingTrafficRateRawOutputFilePath    ;
+            #endregion
+            
+            #region GraphicalOutputFiles
+                private static string _totalTrafficPacketsGraphicalOutputFilePath    ;
+                private static string _totalTrafficBytesGraphicalOutputFilePath     ;
+                private static string _totalTrafficRateGraphicalOutputFilePath       ;
+                private static string _incomingTrafficPacketsGraphicalOutputFilePath ;
+                private static string _outgoingTrafficPacketsGraphicalOutputFilePath ;
+                private static string _incomingTrafficBytesGraphicalOutputFilePath   ;
+                private static string _outgoingTrafficBytesGraphicalOutputFilePath   ;
+                private static string _incomingTrafficRateGraphicalOutputFilePath    ;
+                private static string _outgoingTrafficRateGraphicalOutputFilePath    ;
+            #endregion
+
+            #region CommandsName
+                private const string _netstatCommandName = "netstat";
+                private const string _iptrafCommandName = "iptraf";
+            #endregion
+
+            #region AppParameters
+                private static string _interfaceNetwork = "";
+                private static string _processName = "";
+                private static string _rootOutputFolderPath = "";
+                private static uint _profilingTime ;
+            #endregion
+
+            #region Parsers
+                private static NetstatParser _netstatParser;
+                private static IptrafParser _iptrafParser;
+            #endregion
         #endregion
 
         public static void Main(string[] args)
-        {    
-            // string rootOutputFolderPath = "/home/aymendaoudi/Desktop/Output/Skype/VideoCall/";
-            // string processName = "skype";
-            
-            // _ratePlotSettingsFilePath =  GetPlotSettingsFilePaths(RatePlotSettingsFileName);
-            // _dataPlotSettingsFilePath =  GetPlotSettingsFilePaths(DataPlotSettingsFileName);
+        { 
+            SetApplicationParameters(args);
 
-            // CreateFolderIfInexists(rootOutputFolderPath);
-            // CreateFolderIfInexists(Path.Combine(rootOutputFolderPath,RawOutputFilesFolderName));
-            // CreateFolderIfInexists(Path.Combine(rootOutputFolderPath,GraphicalOutputFilesFolderName));
+            var autoEvent = new AutoResetEvent(false);
+            var profilingTimer = new Timer(new TimerCallback(StartParsing),autoEvent,TimeSpan.FromMinutes(_profilingTime),Timeout.InfiniteTimeSpan);
 
-            // CreateFolderIfInexists(Path.Combine(rootOutputFolderPath,GraphicalOutputFilesFolderName));
-            
-            // SetRawOutputFilePaths(rootOutputFolderPath);
-            // SetGraphicalOutputFilePaths(rootOutputFolderPath);
+            PrepareApplicationFiles();
 
-            // //2) Parse Netstat
-            // var netstatParser = new NetstatParser(_netstatOutputFilePath);
+            StartNetstat();
+            StartIptraf();
 
-            //     // 3) Parse Iptraf
-            // var iptrafParser = new IptrafParser(_iptrafOutputFilePath);
+            autoEvent.WaitOne();
+            profilingTimer.Dispose();
 
-                
-            // // 4) Get the corresponding process' ports from Netstat output
-            // var netstatPorts = netstatParser.GetPortsFromNetstatOutput();
-            // // 5) Join Iptraf output with Netstat filtered ports and get logged row sets for each time interval
-            // var trafficDataRowSets = iptrafParser.GetIptrafTrafficDataSets(netstatPorts);
-            // // 6) Print to Console
-            // //PrintToConsole(trafficDataRowSets);
-            // // 6) Print raw output files 
-            // PrintRawOutputFiles(trafficDataRowSets);
-            // //7) plot beybeyyyy !
-            // PrintGraphicalOutputFiles(trafficDataRowSets);
-
-
-            string interfaceNetwork = "";
-            string processName = "";
-            string rootOutputFolderPath = "";
-
-            if (args.Length == 0)
-            {
-                Write("Interface network : "); interfaceNetwork = ReadLine();
-                Write("Process Name  : "); processName = ReadLine();
-                Write("Output Folder : "); rootOutputFolderPath = ReadLine();
-            }
-            else
-            {
-                interfaceNetwork = args[0];
-                processName = args[1];
-                rootOutputFolderPath = args[2];
-            }
-
-            _ratePlotSettingsFilePath =  GetPlotSettingsFilePaths(RatePlotSettingsFileName);
-            _dataPlotSettingsFilePath =  GetPlotSettingsFilePaths(DataPlotSettingsFileName);
-
-            CreateFolderIfInexists(rootOutputFolderPath);
-            CreateFolderIfInexists(Path.Combine(rootOutputFolderPath,RawOutputFilesFolderName));
-            CreateFolderIfInexists(Path.Combine(rootOutputFolderPath,GraphicalOutputFilesFolderName));
-
-            CreateFolderIfInexists(Path.Combine(rootOutputFolderPath,GraphicalOutputFilesFolderName));
-            
-            SetRawOutputFilePaths(rootOutputFolderPath);
-            SetGraphicalOutputFilePaths(rootOutputFolderPath);
-
-            var netstatParser = new NetstatParser(_netstatOutputFilePath);
-
-            var iptrafParser = new IptrafParser(_iptrafOutputFilePath);
-
-            // 1) Execute Netstat + Iptraf
-
-            var netstatCommand = new ShellCommand("/bin/bash",'c', $"\"netstat -c --all --tcp --udp --program | grep {processName} > {_netstatOutputFilePath}\"", "");
-            netstatCommand.Execute();
-
-            var iptrafCommand = new ShellCommand("/bin/bash",'c', $"\"iptraf -B -u -s {interfaceNetwork} -L {_iptrafOutputFilePath}\"", "");
-            iptrafCommand.Execute();
-
-            WriteLine("Start parsing ? (y/n) ");
-
-            var isParsingAllowed = false;
-
-            while (true)
-            {
-                if (isParsingAllowed = (ReadKey().Key == System.ConsoleKey.Y))
-                {
-                    ShellCommand.Stop("iptraf");
-                    ShellCommand.Stop("netstat");
-                    break;
-                }
-                else if (ReadKey().Key == System.ConsoleKey.N)
-                {
-                    break;
-                }
-                else
-                {
-                    WriteLine("Start parsing ? (y/n) ");
-                }
-            }
-            
-            if (isParsingAllowed)
-            {   
-                // 4) Get the corresponding process' ports from Netstat output
-                var netstatPorts = netstatParser.GetPortsFromNetstatOutput();
-                // 5) Join Iptraf output with Netstat filtered ports and get logged row sets for each time interval
-                var trafficDataRowSets = iptrafParser.GetIptrafTrafficDataSets(netstatPorts);
-                // 6) Print to Console
-                //PrintToConsole(trafficDataRowSets);
-                // 6) Print raw output files 
-                PrintRawOutputFiles(trafficDataRowSets);
-                //7) plot beybeyyyy !
-                PrintGraphicalOutputFiles(trafficDataRowSets);
-            }
-            
             CleanIptraf();
         }
 
+        public static void StartParsing(object stateInfo)
+        {
+            var autoEvent = (AutoResetEvent)stateInfo;
+
+            ShellCommand.Stop(_netstatCommandName);
+            ShellCommand.Stop(_iptrafCommandName);
+
+            // 4) Get the corresponding process' ports from Netstat output
+            var netstatPorts = _netstatParser.GetPortsFromNetstatOutput();
+            // 5) Join Iptraf output with Netstat filtered ports and get logged row sets for each time interval
+            var trafficDataRowSets = _iptrafParser.GetIptrafTrafficDataSets(netstatPorts);
+            // 6) Print to Console
+            //PrintToConsole(trafficDataRowSets);
+            // 6) Print raw output files 
+            PrintRawOutputFiles(trafficDataRowSets);
+            //7) plot beybeyyyy !
+            PrintGraphicalOutputFiles(trafficDataRowSets);
+
+            autoEvent.Set();
+        }
+    
+        public static void StartNetstat()
+        {
+            _netstatParser = new NetstatParser(_netstatOutputFilePath);
+            var netstatCommand = new ShellCommand("/bin/bash",'c', $"\"netstat -c --all --tcp --udp --program | grep {_processName} > {_netstatOutputFilePath}\"", "");
+            netstatCommand.Execute();
+        }
+
+        public static void StartIptraf()
+        {
+            _iptrafParser = new IptrafParser(_iptrafOutputFilePath);
+            var iptrafCommand = new ShellCommand("/bin/bash",'c', $"\"iptraf -B -u -s {_interfaceNetwork} -L {_iptrafOutputFilePath}\"", "");
+            iptrafCommand.Execute();
+        }
+        public static void SetApplicationParameters(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                Write("Interface network   : "); _interfaceNetwork = ReadLine();
+                Write("Process Name        : "); _processName = ReadLine();
+                Write("Profilinf Time      : "); _profilingTime = uint.Parse(ReadLine());                  
+                Write("Output Folder       : "); _rootOutputFolderPath = ReadLine();
+            }
+            else
+            {
+                _interfaceNetwork     = args[0];
+                _processName          = args[1];
+                _profilingTime        = uint.Parse(args[2]);
+                _rootOutputFolderPath = args[3];
+            }
+
+        }
+
+        public static void PrepareApplicationFiles()
+        {
+            _ratePlotSettingsFilePath =  GetPlotSettingsFilePaths(RatePlotSettingsFileName);
+            _dataPlotSettingsFilePath =  GetPlotSettingsFilePaths(DataPlotSettingsFileName);
+
+            CreateFolderIfInexists(_rootOutputFolderPath);
+            CreateFolderIfInexists(Path.Combine(_rootOutputFolderPath,RawOutputFilesFolderName));
+            CreateFolderIfInexists(Path.Combine(_rootOutputFolderPath,GraphicalOutputFilesFolderName));
+
+            CreateFolderIfInexists(Path.Combine(_rootOutputFolderPath,GraphicalOutputFilesFolderName));
+            
+            SetRawOutputFilePaths(_rootOutputFolderPath);
+            SetGraphicalOutputFilePaths(_rootOutputFolderPath);
+        }
 
         private static void PrintRawOutputFiles(List<TrafficDataRowSet> trafficDataRowSets)
         {
