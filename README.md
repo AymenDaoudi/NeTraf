@@ -5,14 +5,15 @@ Linux utility for monitoring Bandwidth consumption by process name
 ## Description
 
 NeTraf is a linux application that helps you monitor the bandwidth consumption of a specific process.
-NeTraf is written in **C#** on **.Net-Core** and uses the following linux utilities : **[Netstat](http://netstat.net/)**, **[Iptraf](http://iptraf.seul.org/)** and **[Gnuplot](http://www.gnuplot.info/)**.
+NeTraf is written in **C#** on **.Net-Core** and uses the following linux utilities : **[Netstat](http://netstat.net/)**, **[IPTraf](http://iptraf.seul.org/)** and **[Gnuplot](http://www.gnuplot.info/)**.
 
 ## Prerequisites
 
 Make sur you have the following tools installed before running **NeTraf** :
+
 1. *Netstat* : this utility comes installed on some linux distributions. To install it (Debian/Ubuntu) : `# apt-get install net-tools`.
 
-2. *Iptraf* : Download and install this utility from [here](ftp://iptraf.seul.org/pub/iptraf/iptraf-3.0.0.bin.i386.tar.gz), then follow these steps to install it:
+2. *IPTraf* : Download and install this utility from [here](ftp://iptraf.seul.org/pub/iptraf/iptraf-3.0.0.bin.i386.tar.gz), then follow these steps to install it:
 
     i. Decompress the .tar.gz file by entering `tar zxvf iptraf-x.y.z.tar.gz`.
     
