@@ -15,19 +15,19 @@ Make sur you have the following tools installed before running **NeTraf** :
 
 2. *IPTraf* : Download and install this utility from [here](ftp://iptraf.seul.org/pub/iptraf/iptraf-3.0.0.bin.i386.tar.gz), then follow         these steps to install it:
 
-        i. Decompress the .tar.gz file by entering `tar zxvf iptraf-x.y.z.tar.gz`.
+      i. Decompress the .tar.gz file by entering `tar zxvf iptraf-x.y.z.tar.gz`.
     
-        ii. If your tar doesn't support the z option, you can separately decompress the tar.gz then extract the resulting .tar archive.
+      ii. If your tar doesn't support the z option, you can separately decompress the tar.gz then extract the resulting .tar archive.
         `gunzip iptraf-x.y.z.tar.gz`
         `tar xvf iptraf-x.y.z.tar`
     
-        iii. This will decompress the sources into a directory called iptraf-x.y.z.
+      iii. This will decompress the sources into a directory called iptraf-x.y.z.
     
-        iv. x.y.z here should be the IPTraf version number you're installing, like 3.0.0.
+      iv. x.y.z here should be the IPTraf version number you're installing, like 3.0.0.
     
-        v. Change to the src directory. It already contains ready-to-run distribution binaries for IPTraf and the accompanying rvnamed  daemon.      
+      v. Change to the src directory. It already contains ready-to-run distribution binaries for IPTraf and the accompanying rvnamed  daemon.      
 
-        vi. To install the software, enter : `make install`.
+      vi. To install the software, enter : `make install`.
 
         while you are logged in as "root". This will install the distribution binary in the /usr/local/bin directory. The necessary working directory /var/local/iptraf will also be created.
 
@@ -45,15 +45,15 @@ Make sur you have the following tools installed before running **NeTraf** :
 
 4. Enter `dotnet run` + args :
 
-        i. 1st argument : **Network interface name**.
+      i. 1st argument : **Network interface name**.
 
-        ii. 2nd argument : **Process name**.
+      ii. 2nd argument : **Process name**.
         
-        iii. 3rd argument : **Monitoring interval** (in minutes).
+      iii. 3rd argument : **Monitoring interval** (in minutes).
         
-        iv. 4th argument : **Output directory** (in minutes).
+      iv. 4th argument : **Output directory** (in minutes).
         
-        v. Example : `dotnet run ens33 skype 15 ../Desktop/OutputResult`.
+      v. Example : `dotnet run ens33 skype 15 ../Desktop/OutputResult`.
 
 ## Results
 
