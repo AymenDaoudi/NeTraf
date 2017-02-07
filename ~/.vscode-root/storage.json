@@ -1,13 +1,12 @@
 {
     "lastKnownKeybindings": {
         "workbench.action.files.newUntitledFile": "Ctrl+N",
-        "workbench.action.files.openFile": "Ctrl+O",
         "workbench.action.reopenClosedEditor": "Ctrl+Shift+T",
         "workbench.action.files.save": "Ctrl+S",
         "workbench.action.files.saveAs": "Ctrl+Shift+S",
         "workbench.action.files.saveAll": "Ctrl+Alt+S",
         "workbench.action.newWindow": "Ctrl+Shift+N",
-        "workbench.action.closeWindow": "Ctrl+Shift+W",
+        "workbench.action.closeWindow": "Ctrl+W",
         "workbench.action.closeActiveEditor": "Ctrl+W",
         "workbench.action.quit": "Ctrl+Q",
         "undo": "Ctrl+Z",
