@@ -62,7 +62,6 @@ Once the profiling is finished, navigate to the output file you precised in the 
 
 2. GraphicalOutput files : contain plots describing the input/output bytes, packets and rate, like follows :
 
-Inline-style: 
 ![alt text](https://github.com/AymenDaoudi/NeTraf/blob/master/Images/Incoming_Traffic_Rate.png "Incoming traffic rate")
 
 ## License
