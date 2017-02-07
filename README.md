@@ -29,7 +29,7 @@ Make sur you have the following tools installed before running **NeTraf** :
 
       vi. To install the software, enter : `make install`.
 
-        while you are logged in as "root". This will install the distribution binary in the /usr/local/bin directory. The necessary working directory /var/local/iptraf will also be created.
+      while you are logged in as "root". This will install the distribution binary in the /usr/local/bin directory. The necessary working directory /var/local/iptraf will also be created.
 
 3. *GnuPlot* : `apt-get install gnuplot`.
 
