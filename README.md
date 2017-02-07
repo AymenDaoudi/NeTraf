@@ -57,6 +57,7 @@ while you are logged in as "root". This will install the distribution binary in 
 ## Results
 
 Once the profiling is finished, navigate to the output file you precised in the beginning, there you'll find tow directories :
+
 1. RawOutput files : these contain csv formatted output files describing the input/output bytes, packets and rate.
 
 2. GraphicalOutput files : contain plots describing the input/output bytes, packets and rate, like follows :
