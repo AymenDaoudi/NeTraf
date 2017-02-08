@@ -44,13 +44,12 @@ Make sur you have the following tools installed before running **NeTraf** :
 3. Enter `dotnet restore` to restore the Nuget dependencies.
 
 4. Enter `dotnet run` + args :
-<<<<<<< HEAD
+
     i. 1st argument : **Network interface name**.
     ii. 2nd argument : **Process name**.
     iii. 3rd argument : **Monitoring interval** (in minutes).
     iv. 4th argument : **Output directory**.
     v. Example : `dotnet run ens33 skype 15 ../Desktop/OutputResult`.
-=======
 
       i. 1st argument : **Network interface name**.
 
@@ -58,10 +57,9 @@ Make sur you have the following tools installed before running **NeTraf** :
         
       iii. 3rd argument : **Monitoring interval** (in minutes).
         
-      iv. 4th argument : **Output directory** (in minutes).
+      iv. 4th argument : **Output directory**.
         
       v. Example : `dotnet run ens33 skype 15 ../Desktop/OutputResult`.
->>>>>>> a2e1ac929642a758e35c16180e48ae0a11fd9f1d
 
 ## Results
 
@@ -71,17 +69,12 @@ Once the profiling is finished, navigate to the output file you precised in the 
 
 2. GraphicalOutput files : contain plots describing the input/output bytes, packets and rate, like follows :
 
-<<<<<<< HEAD
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
-=======
-      ![alt text](https://github.com/AymenDaoudi/NeTraf/blob/master/Images/Incoming_Traffic_Rate.png "Incoming traffic rate")
+![alt text](https://github.com/AymenDaoudi/NeTraf/blob/master/Images/Incoming_Traffic_Rate.png "Incoming traffic rate")
 
 ## License
 
 This project is under the [Creative Commons Attribution NonCommercial NoDerivs (CC-NC-ND)] (https://tldrlegal.com/license/creative-commons-attribution-noncommercial-noderivs-(cc-nc-nd)#summary) fully described in the (c.f. [License.txt](License.txt)) file.
 
 ![CC-NC-ND](http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png)
->>>>>>> a2e1ac929642a758e35c16180e48ae0a11fd9f1d
 
 
