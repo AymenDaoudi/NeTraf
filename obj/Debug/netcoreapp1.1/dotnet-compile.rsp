@@ -95,9 +95,10 @@
 /home/aymendaoudi/Projects/NeTraf/NetstatHelpers/NetstatParser.cs
 /home/aymendaoudi/Projects/NeTraf/Helpers/TrafficUnitType.cs
 /home/aymendaoudi/Projects/NeTraf/Helpers/HelperMethods.cs
-/home/aymendaoudi/Projects/NeTraf/Helpers/ExtensionMethods.cs
 /home/aymendaoudi/Projects/NeTraf/Helpers/TimeUnit.cs
 /home/aymendaoudi/Projects/NeTraf/Helpers/FileManager.cs
+/home/aymendaoudi/Projects/NeTraf/Helpers/ExtensionMethods/TupleExtensions.cs
+/home/aymendaoudi/Projects/NeTraf/Helpers/ExtensionMethods/StringExtensions.cs
 /home/aymendaoudi/Projects/NeTraf/IptrafHelpers/TrafficDataRowSet.cs
 /home/aymendaoudi/Projects/NeTraf/IptrafHelpers/TrafficData.cs
 /home/aymendaoudi/Projects/NeTraf/IptrafHelpers/IptrafParser.cs

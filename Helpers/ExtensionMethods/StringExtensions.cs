@@ -5,7 +5,7 @@ using static NeTraf.HelperMethods;
 
 namespace NeTraf
 {
-    public static class ExtensionMethods
+    public static class StringExtensions
     {
         public static string ToSimpleString(this TrafficUnitType trafficUnitType)
         {
@@ -28,15 +28,6 @@ namespace NeTraf
             return $" Packets : {tuple.Item1} packets,"+ 
                    $" Bytes : {String.Format("{0:0.00}", convertedBytes.Item1)} {convertedBytes.Item2} ," +
                    $" Rate : {String.Format("{0:0.00}", convertedRate.Item1)} {convertedRate.Item2}/s .";
-        }
-
-        public static IEnumerable<string> ReadAllLines(this StreamReader streamReader)
-        {
-            string line;
-            while ((line = streamReader.ReadLine()) !=  null)
-            {
-                yield return line;
-            }
         }
     }
 }
