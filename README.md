@@ -41,7 +41,7 @@ while you are logged in as "root". This will install the distribution binary in 
     i. 1st argument : **Network interface name**.
     ii. 2nd argument : **Process name**.
     iii. 3rd argument : **Monitoring interval** (in minutes).
-    iv. 4th argument : **Output directory** (in minutes).
+    iv. 4th argument : **Output directory**.
     v. Example : `dotnet run ens33 skype 15 ../Desktop/OutputResult`.
 
 ## Results
@@ -51,12 +51,6 @@ Once the profiling is finished, navigate to the output file you precised in the 
 2. GraphicalOutput files : contain plots describing the input/output bytes, packets and rate, like follows :
 
 Inline-style: 
-![alt text](https://github.com/AymenDaoudi/NeTraf/blob/master/Images/Incoming_Traffic_Rate.png "Incoming traffic rate")
-
-## License
-
-This project is under the [Creative Commons Attribution NonCommercial NoDerivs (CC-NC-ND)] (https://tldrlegal.com/license/creative-commons-attribution-noncommercial-noderivs-(cc-nc-nd)#summary) fully described in the (c.f. [License.txt](License.txt)) file.
-
-![CC-NC-ND](http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png)
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
 
 
