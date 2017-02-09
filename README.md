@@ -31,7 +31,7 @@ Make sur you have the following tools installed before running **NeTraf** :
 
       while you are logged in as "root". This will install the distribution binary in the /usr/local/bin directory. The necessary working directory /var/local/iptraf will also be created.
 
-3. *GnuPlot* : `apt-get install gnuplot`.
+3. *GnuPlot* : `apt-get install gnuplot-qt`.
 
 4. *.Net Core* : Get .Net Core and the toolings [here](https://www.microsoft.com/net/core#linuxubuntu).
 
