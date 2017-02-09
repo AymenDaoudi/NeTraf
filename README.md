@@ -1,5 +1,5 @@
 # NeTraf
-Linux utility for monitoring Bandwidth consumption by process name
+Linux utility for monitoring Bandwidth usage for TCP/UDP connections by process name.
 
 
 ## Description
