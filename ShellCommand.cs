@@ -44,6 +44,21 @@ namespace NeTraf
                     process.WaitForExit();
                 } 
             }
+
+            public static void StopUsingBash(string commandName)
+            {
+                var processes = Process.GetProcessesByName(commandName);
+                foreach (var process in processes)
+                {
+                    var killingProcess = new Process();
+                    killingProcess.StartInfo.FileName = "/bin/bash";
+                    killingProcess.StartInfo.Arguments = $"-c \"kill -s USR1 {process.Id}\"";
+                    killingProcess.StartInfo.UseShellExecute = false; 
+                    killingProcess.StartInfo.RedirectStandardOutput = true;
+                    killingProcess.Start ();
+                } 
+                
+            }
         #endregion
     }  
 }

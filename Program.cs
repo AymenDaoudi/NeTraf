@@ -80,7 +80,7 @@ namespace NeTraf
 
             autoEvent.WaitOne();
             profilingTimer.Dispose();
-
+            
             CleanIptraf();
         }
 
