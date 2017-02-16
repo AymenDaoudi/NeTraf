@@ -1,5 +1,5 @@
 # NeTraf
-Linux utility for monitoring Bandwidth consumption by process name
+Linux utility for monitoring Bandwidth usage for TCP/UDP connections by process name.
 
 
 ## Description
@@ -70,6 +70,12 @@ Once the profiling is finished, navigate to the output file you precised in the 
 2. GraphicalOutput files : contain plots describing the input/output bytes, packets and rate, like follows :
 
 ![alt text](https://github.com/AymenDaoudi/NeTraf/blob/master/Images/Incoming_Traffic_Rate.png "Incoming traffic rate")
+
+## Attention (Temporarily until future fixes):
+
+1. Avoid to delete the IPTraf log file inside the output folder right after the completion of the monitoring, deleting the IPTraf log file will cause it to log null characters (ASCII code 0).
+
+2. Avoid using the same output directory for different monitorings, think about using another directory.
 
 ## License
 
