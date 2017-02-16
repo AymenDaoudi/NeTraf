@@ -71,12 +71,6 @@ Once the profiling is finished, navigate to the output file you precised in the 
 
 ![alt text](https://github.com/AymenDaoudi/NeTraf/blob/master/Images/Incoming_Traffic_Rate.png "Incoming traffic rate")
 
-## Attention (Temporarily until future fixes):
-
-1. Avoid to delete the IPTraf log file inside the output folder right after the completion of the monitoring, deleting the IPTraf log file will cause it to log null characters (ASCII code 0).
-
-2. Avoid using the same output directory for different monitorings, think about using another directory.
-
 ## License
 
 This project is under the [Creative Commons Attribution NonCommercial NoDerivs (CC-NC-ND)] (https://tldrlegal.com/license/creative-commons-attribution-noncommercial-noderivs-(cc-nc-nd)#summary) fully described in the (c.f. [License.txt](License.txt)) file.
