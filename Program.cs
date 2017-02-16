@@ -88,9 +88,9 @@ namespace NeTraf
             public static void StartParsing(object stateInfo)
             {
                 var autoEvent = (AutoResetEvent)stateInfo;
-
+                
                 ShellCommand.Stop(_netstatCommandName);
-                ShellCommand.Stop(_iptrafCommandName);
+                ShellCommand.StopUsingBash(_iptrafCommandName);
 
                 List<uint> netstatPorts = _netstatParser.GetPortsFromNetstatOutput();
                 var trafficDataRowSets = _iptrafParser.GetIptrafTrafficDataRowSets(netstatPorts);
@@ -100,7 +100,7 @@ namespace NeTraf
 
                 autoEvent.Set();
             }
-    
+
             public static void StartNetstat()
             {
                 _netstatParser = new NetstatParser(_netstatOutputFilePath);

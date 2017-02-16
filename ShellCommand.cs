@@ -52,7 +52,7 @@ namespace NeTraf
                 {
                     var killingProcess = new Process();
                     killingProcess.StartInfo.FileName = "/bin/bash";
-                    killingProcess.StartInfo.Arguments = $"-c \"kill -s USR1 {process.Id}\"";
+                    killingProcess.StartInfo.Arguments = $"-c \"kill -s USR2 {process.Id}\"";
                     killingProcess.StartInfo.UseShellExecute = false; 
                     killingProcess.StartInfo.RedirectStandardOutput = true;
                     killingProcess.Start ();
